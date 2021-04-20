@@ -2,30 +2,14 @@ import numpy as np
 import cv2
 
 
-cap = cv2.VideoCapture(0)
-color = (0, 255, 0)
-line_width = 3
-radius = 100
-point = (0, 0)
+bw = cv2.imread("static/test_images/liverpool.jpg", 0)
+cv2.imshow("BW image", bw)
 
+ret, thresh_basic = cv2.threshold(bw, 100, 255, cv2.THRESH_BINARY)
+cv2.imshow("Thresh Basic", thresh_basic)
 
-def click(event, x, y, flag, param):
-    global point, pressed
-    if event == cv2.EVENT_LBUTTONDOWN:
-        print("Pressed: ", x, y)
-        point = (x, y)
+thresh_adapt = cv2.adaptiveThreshold(bw, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 115, 1)
+cv2.imshow("Thresh Adaptive", thresh_adapt)
 
-cv2.namedWindow("Frame")
-cv2.setMouseCallback("Frame", click)
-
-while True:
-    ret, frame = cap.read()
-    frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-    cv2.circle(frame, point, radius, color, line_width)
-    cv2.imshow("Frame", frame)
-    ch = cv2.waitKey(1)
-    if ch & 0xFF == ord('q'):
-        break
-
-cap.release()
+cv2.waitKey(0)
 cv2.destroyAllWindows()
